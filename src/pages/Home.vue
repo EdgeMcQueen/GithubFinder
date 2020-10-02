@@ -10,6 +10,16 @@
           placeholder="Type username..."/>
 
           <button class="btn btnPrimary" @click="getRepos">Search</button>
+          <!-- repos wrapper -->
+          <div class="repos repos__wrapper" v-if="repos">
+            <!-- repos item from array -->
+            <div class="repos__item" v-for="repo in repos" :key="repo.id">
+              <div class="repos__info">
+                <a class="repos__link" target="_blank" :href="repo.html_url">{{ repo.name }}</a>
+                <span>{{ repo.stargazers_count }} ⭐</span>
+              </div>
+            </div>
+          </div>
 
       </div>
     </section>
@@ -27,7 +37,8 @@ export default {
   },
   data() {
     return {
-      search: ''
+      search: '',
+      repos: null
     }
   },
   methods: {
@@ -39,6 +50,7 @@ export default {
         .get(`https://api.github.com/users/${this.search}/repos`)
         .then(res => {
           console.log(res)
+          this.repos = res.data
         })
         .catch(err => {
           console.log(err)
@@ -57,5 +69,20 @@ export default {
 
   .btn {
     margin-top: 40px;
+  }
+
+  .repos {
+    &__wrapper {
+      width: 400px;
+      margin: 30px 0;
+    }
+    &__info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid #dbdbdb;
+    }
   }
 </style>
