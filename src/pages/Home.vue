@@ -9,7 +9,16 @@
           @search="search = $event"
           placeholder="Type username..."/>
 
-          <button class="btn btnPrimary" @click="getRepos">Search</button>
+          <button v-if="!repos" class="btn btnPrimary" @click="getRepos">Search</button>
+          <button v-else class="btn btnPrimary" @click="getRepos">Search again!</button>
+
+              <p v-if="noRepos" style="margin-top: 20px">{{ noReposTitle }}</p>
+
+          <!-- errors -->
+          <div class="error" v-if="error" style="margin-top: 20px; color: red">
+            <p>{{ error }}</p>
+          </div>
+
           <!-- repos wrapper -->
           <div class="repos repos__wrapper" v-if="repos">
             <!-- repos item from array -->
@@ -38,22 +47,32 @@ export default {
   data() {
     return {
       search: '',
-      repos: null
+      error: null,
+      repos: null,
+      noRepos: null,
+      noReposTitle: 'User have 0 repos'
     }
   },
   methods: {
     getRepos () {
       // https://api.github.com/users/vedees/repos
-      console.log(`get user ${this.search}`)
+      // console.log(`get user ${this.search}`)
 
       axios
         .get(`https://api.github.com/users/${this.search}/repos`)
         .then(res => {
           console.log(res)
           this.repos = res.data
+          this.error = null
+          this.noRepos = null
+
+          if (res.data.length === 0) this.noRepos = true
         })
         .catch(err => {
           console.log(err)
+          this.repos = null
+          this.noRepos = null
+          this.error = 'Can`t find this user'
         })
     }
   },
