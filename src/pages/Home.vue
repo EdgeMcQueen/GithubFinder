@@ -50,7 +50,7 @@ export default {
       error: null,
       repos: null,
       noRepos: null,
-      noReposTitle: 'User have 0 repos'
+      noReposTitle: 'user has no repositories'
     }
   },
   methods: {
